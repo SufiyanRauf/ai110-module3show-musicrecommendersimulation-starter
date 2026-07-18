@@ -98,12 +98,30 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
     return round(score, 2), reasons
 
 def recommend_songs(user_prefs: Dict, songs: List[Dict], k: int = 5) -> List[Tuple[Dict, float, str]]:
-    """Score every song, then return the top k as (song, score, reasons)."""
+    """Score every song, then pick the top k while limiting repeat artists."""
     scored = []
     for song in songs:
         score, reasons = score_song(user_prefs, song)
-        explanation = ", ".join(reasons) if reasons else "no strong matches"
-        scored.append((song, score, explanation))
+        scored.append((song, score, reasons))
 
-    scored.sort(key=lambda item: item[1], reverse=True)
-    return scored[:k]
+    picked = []
+    used_artists = set()
+    while len(picked) < k and scored:
+        # pick the best remaining song, with a penalty for artists already picked
+        best = None
+        for song, score, reasons in scored:
+            adjusted = score
+            note = list(reasons)
+            if song["artist"] in used_artists:
+                adjusted -= 1.0
+                note.append("diversity penalty (-1.0)")
+            if best is None or adjusted > best[1]:
+                best = (song, adjusted, note)
+
+        song, adjusted, note = best
+        explanation = ", ".join(note) if note else "no strong matches"
+        picked.append((song, round(adjusted, 2), explanation))
+        used_artists.add(song["artist"])
+        scored = [item for item in scored if item[0] is not song]
+
+    return picked
