@@ -14,7 +14,7 @@ MusicalAuraMatch is a classroom project, not a real product. It suggests songs f
 
 ## 3. How the Model Works
 
-The goal is to guess which songs a listener will like and put the best ones at the top. Each song has a genre, a mood, an energy level, and a few other numbers like how acoustic it is. The user gives a favorite genre, a favorite mood, a target energy, and whether they like acoustic music. The model gives every song a score. A song earns 2 points if its genre matches, 1 point if its mood matches, up to 1 more point for having an energy level close to what the user wants, and 1 bonus point if the user likes acoustic music and the song is very acoustic. Then it sorts all the songs by score and shows the top five, with the reason each one was picked. The main change from the starter code was filling in this scoring and adding the reasons.
+The goal is to guess which songs a listener will like and put the best ones at the top. Each song has a genre, a mood, an energy level, and a few other numbers like how acoustic it is. The user gives a favorite genre, a favorite mood, a target energy, and whether they like acoustic music. The model gives every song a score. A song earns 2 points if its genre matches, 1 point if its mood matches, up to 1 more point for having an energy level close to what the user wants, and 1 bonus point if the user likes acoustic music and the song is very acoustic. Then it picks the top five by score, but it lowers a song's score if another song by the same artist is already in the list, so one artist does not take over. Each pick shows the reason it was chosen. The main change from the starter code was filling in this scoring and adding the reasons.
 
 ---
 
@@ -72,10 +72,10 @@ Profile: {'genre': 'lofi', 'mood': 'chill', 'energy': 0.3, 'likes_acoustic': Tru
    because: genre match (+2.0), mood match (+1.0), energy close (+0.95), acoustic bonus (+1.0)
 2. Midnight Coding by LoRoom - score 4.88
    because: genre match (+2.0), mood match (+1.0), energy close (+0.88), acoustic bonus (+1.0)
-3. Focus Flow by LoRoom - score 3.90
-   because: genre match (+2.0), energy close (+0.9), acoustic bonus (+1.0)
-4. Spacewalk Thoughts by Orbit Bloom - score 2.98
+3. Spacewalk Thoughts by Orbit Bloom - score 2.98
    because: mood match (+1.0), energy close (+0.98), acoustic bonus (+1.0)
+4. Focus Flow by LoRoom - score 2.90
+   because: genre match (+2.0), energy close (+0.9), acoustic bonus (+1.0), diversity penalty (-1.0)
 5. Coffee Shop Stories by Slow Stereo - score 1.93
    because: energy close (+0.93), acoustic bonus (+1.0)
 ```

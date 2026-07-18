@@ -63,9 +63,10 @@ How a score is computed: each song earns points for a genre match, a mood match,
 close its energy is to target_energy, and an acoustic bonus if the user likes acoustic
 songs. A higher total means a better fit.
 
-How songs get chosen: every song is scored, the list is sorted from high to low, and the
-top few are returned. How many come back is set by a number called k, which is 5 by
-default.
+How songs get chosen: every song is scored, then I pick the top few one at a time, taking
+the highest score each round. If a song's artist is already in the list, I knock a point
+off its score first, so one artist does not take over the results. How many come back is
+set by a number called k, which is 5 by default.
 
 The finalized scoring recipe, with the exact points each song can earn:
 
@@ -150,8 +151,8 @@ Top recommendations:
 4. Concrete Kings by Blockwise - score 0.96
    because: energy close (+0.96)
 
-5. Night Drive Loop by Neon Echo - score 0.95
-   because: energy close (+0.95)
+5. Storm Runner by Voltline - score 0.89
+   because: energy close (+0.89)
 ```
 
 **Screenshot or video** *(optional)*: <!-- Insert a screenshot or demo video link here -->
@@ -166,7 +167,7 @@ Use this section to document the experiments you ran. For example:
 - What happened when you added tempo or valence to the score
 - How did your system behave for different types of users
 
-I tried the weight shift experiment. I doubled how much energy counts and cut the genre points in half, from 2.0 down to 1.0. When I ran it, the number one pick for every profile stayed the same, but the middle of the list shuffled around. Songs that were not the right genre but had a really close energy moved up. For example a chill ambient song jumped ahead of a real lofi song in the Chill Lofi list, just because its energy was almost perfect. So the change made the results different but not really more accurate. It told me that genre plus mood together still control the top pick, and energy mostly matters for breaking ties lower down. That is why I kept the original weights.
+I tried the weight shift experiment. I doubled how much energy counts and cut the genre points in half, from 2.0 down to 1.0. When I ran it, the number one pick for every profile stayed the same, but the middle of the list shuffled around. Songs that were not the right genre but had a really close energy moved up, while songs that only matched on genre slipped down. So the change made the results different but not really more accurate. It told me that genre plus mood together still control the top pick, and energy mostly matters for breaking ties lower down. That is why I kept the original weights.
 
 ---
 
