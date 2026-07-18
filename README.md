@@ -135,24 +135,20 @@ Paste a sample of your recommender's output here as a text block so a reader can
 ```
 Loaded songs: 17
 
-Profile: genre=pop, mood=happy, energy=0.8
-
-Top recommendations:
-
-1. Sunrise City by Neon Echo - score 3.98
-   because: genre match (+2.0), mood match (+1.0), energy close (+0.98)
-
-2. Gym Hero by Max Pulse - score 2.87
-   because: genre match (+2.0), energy close (+0.87)
-
-3. Rooftop Lights by Indigo Parade - score 1.96
-   because: mood match (+1.0), energy close (+0.96)
-
-4. Concrete Kings by Blockwise - score 0.96
-   because: energy close (+0.96)
-
-5. Storm Runner by Voltline - score 0.89
-   because: energy close (+0.89)
+Profile: {'genre': 'pop', 'mood': 'happy', 'energy': 0.8}
++-----+----------------+---------------+---------+-------------------------------------------------------------+
+| #   | Song           | Artist        | Score   | Why                                                         |
++=====+================+===============+=========+=============================================================+
+| 1   | Sunrise City   | Neon Echo     | 3.98    | genre match (+2.0), mood match (+1.0), energy close (+0.98) |
++-----+----------------+---------------+---------+-------------------------------------------------------------+
+| 2   | Gym Hero       | Max Pulse     | 2.87    | genre match (+2.0), energy close (+0.87)                    |
++-----+----------------+---------------+---------+-------------------------------------------------------------+
+| 3   | Rooftop Lights | Indigo Parade | 1.96    | mood match (+1.0), energy close (+0.96)                     |
++-----+----------------+---------------+---------+-------------------------------------------------------------+
+| 4   | Concrete Kings | Blockwise     | 0.96    | energy close (+0.96)                                        |
++-----+----------------+---------------+---------+-------------------------------------------------------------+
+| 5   | Storm Runner   | Voltline      | 0.89    | energy close (+0.89)                                        |
++-----+----------------+---------------+---------+-------------------------------------------------------------+
 ```
 
 **Screenshot or video** *(optional)*: <!-- Insert a screenshot or demo video link here -->

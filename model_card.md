@@ -53,76 +53,91 @@ The raw terminal output for all five profiles is below:
 ```
 === High-Energy Pop ===
 Profile: {'genre': 'pop', 'mood': 'happy', 'energy': 0.9}
-1. Sunrise City by Neon Echo - score 3.92
-   because: genre match (+2.0), mood match (+1.0), energy close (+0.92)
-2. Gym Hero by Max Pulse - score 2.97
-   because: genre match (+2.0), energy close (+0.97)
-3. Rooftop Lights by Indigo Parade - score 1.86
-   because: mood match (+1.0), energy close (+0.86)
-4. Storm Runner by Voltline - score 0.99
-   because: energy close (+0.99)
-5. Neon Pulse by Ravelight - score 0.95
-   because: energy close (+0.95)
++-----+----------------+---------------+---------+-------------------------------------------------------------+
+| #   | Song           | Artist        | Score   | Why                                                         |
++=====+================+===============+=========+=============================================================+
+| 1   | Sunrise City   | Neon Echo     | 3.92    | genre match (+2.0), mood match (+1.0), energy close (+0.92) |
++-----+----------------+---------------+---------+-------------------------------------------------------------+
+| 2   | Gym Hero       | Max Pulse     | 2.97    | genre match (+2.0), energy close (+0.97)                    |
++-----+----------------+---------------+---------+-------------------------------------------------------------+
+| 3   | Rooftop Lights | Indigo Parade | 1.86    | mood match (+1.0), energy close (+0.86)                     |
++-----+----------------+---------------+---------+-------------------------------------------------------------+
+| 4   | Storm Runner   | Voltline      | 0.99    | energy close (+0.99)                                        |
++-----+----------------+---------------+---------+-------------------------------------------------------------+
+| 5   | Neon Pulse     | Ravelight     | 0.95    | energy close (+0.95)                                        |
++-----+----------------+---------------+---------+-------------------------------------------------------------+
 ```
 
 ```
 === Chill Lofi ===
 Profile: {'genre': 'lofi', 'mood': 'chill', 'energy': 0.3, 'likes_acoustic': True}
-1. Library Rain by Paper Lanterns - score 4.95
-   because: genre match (+2.0), mood match (+1.0), energy close (+0.95), acoustic bonus (+1.0)
-2. Midnight Coding by LoRoom - score 4.88
-   because: genre match (+2.0), mood match (+1.0), energy close (+0.88), acoustic bonus (+1.0)
-3. Spacewalk Thoughts by Orbit Bloom - score 2.98
-   because: mood match (+1.0), energy close (+0.98), acoustic bonus (+1.0)
-4. Focus Flow by LoRoom - score 2.90
-   because: genre match (+2.0), energy close (+0.9), acoustic bonus (+1.0), diversity penalty (-1.0)
-5. Coffee Shop Stories by Slow Stereo - score 1.93
-   because: energy close (+0.93), acoustic bonus (+1.0)
++-----+---------------------+----------------+---------+------------------------------------------------------------------------------------------+
+| #   | Song                | Artist         | Score   | Why                                                                                      |
++=====+=====================+================+=========+==========================================================================================+
+| 1   | Library Rain        | Paper Lanterns | 4.95    | genre match (+2.0), mood match (+1.0), energy close (+0.95), acoustic bonus (+1.0)       |
++-----+---------------------+----------------+---------+------------------------------------------------------------------------------------------+
+| 2   | Midnight Coding     | LoRoom         | 4.88    | genre match (+2.0), mood match (+1.0), energy close (+0.88), acoustic bonus (+1.0)       |
++-----+---------------------+----------------+---------+------------------------------------------------------------------------------------------+
+| 3   | Spacewalk Thoughts  | Orbit Bloom    | 2.98    | mood match (+1.0), energy close (+0.98), acoustic bonus (+1.0)                           |
++-----+---------------------+----------------+---------+------------------------------------------------------------------------------------------+
+| 4   | Focus Flow          | LoRoom         | 2.90    | genre match (+2.0), energy close (+0.9), acoustic bonus (+1.0), diversity penalty (-1.0) |
++-----+---------------------+----------------+---------+------------------------------------------------------------------------------------------+
+| 5   | Coffee Shop Stories | Slow Stereo    | 1.93    | energy close (+0.93), acoustic bonus (+1.0)                                              |
++-----+---------------------+----------------+---------+------------------------------------------------------------------------------------------+
 ```
 
 ```
 === Deep Intense Rock ===
 Profile: {'genre': 'rock', 'mood': 'intense', 'energy': 0.9}
-1. Storm Runner by Voltline - score 3.99
-   because: genre match (+2.0), mood match (+1.0), energy close (+0.99)
-2. Gym Hero by Max Pulse - score 1.97
-   because: mood match (+1.0), energy close (+0.97)
-3. Neon Pulse by Ravelight - score 0.95
-   because: energy close (+0.95)
-4. Concrete Kings by Blockwise - score 0.94
-   because: energy close (+0.94)
-5. Iron Verdict by Ashfall - score 0.93
-   because: energy close (+0.93)
++-----+----------------+-----------+---------+-------------------------------------------------------------+
+| #   | Song           | Artist    | Score   | Why                                                         |
++=====+================+===========+=========+=============================================================+
+| 1   | Storm Runner   | Voltline  | 3.99    | genre match (+2.0), mood match (+1.0), energy close (+0.99) |
++-----+----------------+-----------+---------+-------------------------------------------------------------+
+| 2   | Gym Hero       | Max Pulse | 1.97    | mood match (+1.0), energy close (+0.97)                     |
++-----+----------------+-----------+---------+-------------------------------------------------------------+
+| 3   | Neon Pulse     | Ravelight | 0.95    | energy close (+0.95)                                        |
++-----+----------------+-----------+---------+-------------------------------------------------------------+
+| 4   | Concrete Kings | Blockwise | 0.94    | energy close (+0.94)                                        |
++-----+----------------+-----------+---------+-------------------------------------------------------------+
+| 5   | Iron Verdict   | Ashfall   | 0.93    | energy close (+0.93)                                        |
++-----+----------------+-----------+---------+-------------------------------------------------------------+
 ```
 
 ```
 === Conflicting High-Energy Sad ===
 Profile: {'genre': 'classical', 'mood': 'melancholic', 'energy': 0.9}
-1. Winter Nocturne by Clara Voss - score 3.32
-   because: genre match (+2.0), mood match (+1.0), energy close (+0.32)
-2. Storm Runner by Voltline - score 0.99
-   because: energy close (+0.99)
-3. Gym Hero by Max Pulse - score 0.97
-   because: energy close (+0.97)
-4. Neon Pulse by Ravelight - score 0.95
-   because: energy close (+0.95)
-5. Concrete Kings by Blockwise - score 0.94
-   because: energy close (+0.94)
++-----+-----------------+------------+---------+-------------------------------------------------------------+
+| #   | Song            | Artist     | Score   | Why                                                         |
++=====+=================+============+=========+=============================================================+
+| 1   | Winter Nocturne | Clara Voss | 3.32    | genre match (+2.0), mood match (+1.0), energy close (+0.32) |
++-----+-----------------+------------+---------+-------------------------------------------------------------+
+| 2   | Storm Runner    | Voltline   | 0.99    | energy close (+0.99)                                        |
++-----+-----------------+------------+---------+-------------------------------------------------------------+
+| 3   | Gym Hero        | Max Pulse  | 0.97    | energy close (+0.97)                                        |
++-----+-----------------+------------+---------+-------------------------------------------------------------+
+| 4   | Neon Pulse      | Ravelight  | 0.95    | energy close (+0.95)                                        |
++-----+-----------------+------------+---------+-------------------------------------------------------------+
+| 5   | Concrete Kings  | Blockwise  | 0.94    | energy close (+0.94)                                        |
++-----+-----------------+------------+---------+-------------------------------------------------------------+
 ```
 
 ```
 === Unknown Genre ===
 Profile: {'genre': 'kpop', 'mood': 'happy', 'energy': 0.5}
-1. Rooftop Lights by Indigo Parade - score 1.74
-   because: mood match (+1.0), energy close (+0.74)
-2. Sunrise City by Neon Echo - score 1.68
-   because: mood match (+1.0), energy close (+0.68)
-3. Slow Sunday by Vela Grey - score 1.00
-   because: energy close (+1.0)
-4. Island Time by Coral Sound - score 0.98
-   because: energy close (+0.98)
-5. Dusty Backroads by Hazel Pines - score 0.95
-   because: energy close (+0.95)
++-----+-----------------+---------------+---------+-----------------------------------------+
+| #   | Song            | Artist        | Score   | Why                                     |
++=====+=================+===============+=========+=========================================+
+| 1   | Rooftop Lights  | Indigo Parade | 1.74    | mood match (+1.0), energy close (+0.74) |
++-----+-----------------+---------------+---------+-----------------------------------------+
+| 2   | Sunrise City    | Neon Echo     | 1.68    | mood match (+1.0), energy close (+0.68) |
++-----+-----------------+---------------+---------+-----------------------------------------+
+| 3   | Slow Sunday     | Vela Grey     | 1.00    | energy close (+1.0)                     |
++-----+-----------------+---------------+---------+-----------------------------------------+
+| 4   | Island Time     | Coral Sound   | 0.98    | energy close (+0.98)                    |
++-----+-----------------+---------------+---------+-----------------------------------------+
+| 5   | Dusty Backroads | Hazel Pines   | 0.95    | energy close (+0.95)                    |
++-----+-----------------+---------------+---------+-----------------------------------------+
 ```
 
 ---
