@@ -9,7 +9,7 @@ You will implement the functions in recommender.py:
 - recommend_songs
 """
 
-from src.recommender import load_songs, recommend_songs
+from src.recommender import load_songs, recommend_songs, SCORING_MODES
 from tabulate import tabulate
 
 
@@ -23,9 +23,13 @@ PROFILES = {
     "Unknown Genre": {"genre": "kpop", "mood": "happy", "energy": 0.5},
 }
 
+# Change this to try a different ranking strategy for the stress test:
+# "balanced", "genre-first", "mood-first", or "energy-focused".
+MODE = "balanced"
 
-def show_recommendations(name, user_prefs, songs, k=5):
-    recommendations = recommend_songs(user_prefs, songs, k=k)
+
+def show_recommendations(name, user_prefs, songs, k=5, mode="balanced"):
+    recommendations = recommend_songs(user_prefs, songs, k=k, mode=mode)
     rows = []
     for i, (song, score, explanation) in enumerate(recommendations, start=1):
         rows.append([i, song["title"], song["artist"], f"{score:.2f}", explanation])
@@ -35,11 +39,21 @@ def show_recommendations(name, user_prefs, songs, k=5):
     print()
 
 
+def compare_modes(name, user_prefs, songs, k=3):
+    # show how the same listener's top picks change under each scoring mode
+    print(f"##### Scoring mode comparison: {name} #####\n")
+    for mode in SCORING_MODES:
+        show_recommendations(f"{name} - {mode}", user_prefs, songs, k=k, mode=mode)
+
+
 def main() -> None:
     songs = load_songs("data/songs.csv")
     print(f"Loaded songs: {len(songs)}\n")
     for name, prefs in PROFILES.items():
-        show_recommendations(name, prefs, songs)
+        show_recommendations(name, prefs, songs, mode=MODE)
+
+    mixed = {"genre": "pop", "mood": "chill", "energy": 0.5}
+    compare_modes("Mixed taste - pop, chill, mid energy", mixed, songs)
 
 
 if __name__ == "__main__":

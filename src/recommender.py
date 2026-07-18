@@ -73,35 +73,47 @@ def load_songs(csv_path: str) -> List[Dict]:
             songs.append(row)
     return songs
 
-def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
+# Different ranking strategies. Each mode is just a set of weights the scorer uses,
+# so main.py can switch strategies without touching the scoring code (a simple Strategy pattern).
+SCORING_MODES = {
+    "balanced": {"genre": 2.0, "mood": 1.0, "energy": 1.0, "acoustic": 1.0},
+    "genre-first": {"genre": 3.0, "mood": 1.0, "energy": 1.0, "acoustic": 1.0},
+    "mood-first": {"genre": 1.0, "mood": 3.0, "energy": 1.0, "acoustic": 1.0},
+    "energy-focused": {"genre": 1.0, "mood": 1.0, "energy": 3.0, "acoustic": 1.0},
+}
+
+def score_song(user_prefs: Dict, song: Dict, weights: Dict = None) -> Tuple[float, List[str]]:
     """Score one song against the user's prefs and list the reasons why."""
+    if weights is None:
+        weights = SCORING_MODES["balanced"]
     score = 0.0
     reasons = []
 
     if song["genre"] == user_prefs.get("genre"):
-        score += 2.0
-        reasons.append("genre match (+2.0)")
+        score += weights["genre"]
+        reasons.append(f"genre match (+{weights['genre']})")
 
     if song["mood"] == user_prefs.get("mood"):
-        score += 1.0
-        reasons.append("mood match (+1.0)")
+        score += weights["mood"]
+        reasons.append(f"mood match (+{weights['mood']})")
 
     if "energy" in user_prefs:
-        closeness = round(1.0 - abs(song["energy"] - user_prefs["energy"]), 2)
+        closeness = round(weights["energy"] * (1.0 - abs(song["energy"] - user_prefs["energy"])), 2)
         score += closeness
         reasons.append(f"energy close (+{closeness})")
 
     if user_prefs.get("likes_acoustic") and song["acousticness"] > 0.6:
-        score += 1.0
-        reasons.append("acoustic bonus (+1.0)")
+        score += weights["acoustic"]
+        reasons.append(f"acoustic bonus (+{weights['acoustic']})")
 
     return round(score, 2), reasons
 
-def recommend_songs(user_prefs: Dict, songs: List[Dict], k: int = 5) -> List[Tuple[Dict, float, str]]:
-    """Score every song, then pick the top k while limiting repeat artists."""
+def recommend_songs(user_prefs: Dict, songs: List[Dict], k: int = 5, mode: str = "balanced") -> List[Tuple[Dict, float, str]]:
+    """Score every song with the chosen mode, then pick the top k while limiting repeat artists."""
+    weights = SCORING_MODES[mode]
     scored = []
     for song in songs:
-        score, reasons = score_song(user_prefs, song)
+        score, reasons = score_song(user_prefs, song, weights)
         scored.append((song, score, reasons))
 
     picked = []
