@@ -1,93 +1,54 @@
 # 🎧 Model Card: Music Recommender Simulation
 
-## 1. Model Name  
+## 1. Model Name
 
-Give your model a short, descriptive name.  
-Example: **VibeFinder 1.0**  
-
----
-
-## 2. Intended Use  
-
-Describe what your recommender is designed to do and who it is for. 
-
-Prompts:  
-
-- What kind of recommendations does it generate  
-- What assumptions does it make about the user  
-- Is this for real users or classroom exploration  
+MusicalAuraMatch 1.0
 
 ---
 
-## 3. How the Model Works  
+## 2. Intended Use
 
-Explain your scoring approach in simple language.  
-
-Prompts:  
-
-- What features of each song are used (genre, energy, mood, etc.)  
-- What user preferences are considered  
-- How does the model turn those into a score  
-- What changes did you make from the starter logic  
-
-Avoid code here. Pretend you are explaining the idea to a friend who does not program.
+MusicalAuraMatch is a classroom project, not a real product. It suggests songs from a small fixed catalog by matching them to a made up taste profile. It assumes each user can be boiled down to one favorite genre, one favorite mood, a target energy level, and whether they like acoustic music. It is meant for exploring how recommenders work, not for real users. It should not be used for real recommendations. And it is not fair or complete, because the catalog is tiny and uneven.
 
 ---
 
-## 4. Data  
+## 3. How the Model Works
 
-Describe the dataset the model uses.  
-
-Prompts:  
-
-- How many songs are in the catalog  
-- What genres or moods are represented  
-- Did you add or remove data  
-- Are there parts of musical taste missing in the dataset  
+The goal is to guess which songs a listener will like and put the best ones at the top. Each song has a genre, a mood, an energy level, and a few other numbers like how acoustic it is. The user gives a favorite genre, a favorite mood, a target energy, and whether they like acoustic music. The model gives every song a score. A song earns 2 points if its genre matches, 1 point if its mood matches, up to 1 more point for having an energy level close to what the user wants, and 1 bonus point if the user likes acoustic music and the song is very acoustic. Then it sorts all the songs by score and shows the top five, with the reason each one was picked. The main change from the starter code was filling in this scoring and adding the reasons.
 
 ---
 
-## 5. Strengths  
+## 4. Data
 
-Where does your system seem to work well  
-
-Prompts:  
-
-- User types for which it gives reasonable results  
-- Any patterns you think your scoring captures correctly  
-- Cases where the recommendations matched your intuition  
+The catalog has 17 songs. I started with 10 and added 7 more to cover more genres and moods. Each song has a title, artist, genre, mood, and five number features: energy, tempo, valence, danceability, and acousticness. The genres include pop, lofi, rock, jazz, ambient, hip hop, edm, classical, country, metal, r&b, and reggae. The data is small and uneven, lofi has three songs while most genres only have one. There are no lyrics, no language, and no artist popularity, so a lot of what makes people actually like a song is missing.
 
 ---
 
-## 6. Limitations and Bias 
+## 5. Strengths
 
-Where the system struggles or behaves unfairly. 
-
-Prompts:  
-
-- Features it does not consider  
-- Genres or moods that are underrepresented  
-- Cases where the system overfits to one preference  
-- Ways the scoring might unintentionally favor some users
-
-One weakness I found is that the recommender treats genre as an exact match, so it ends up favoring the genres that have the most songs in my catalog. My dataset has three lofi tracks but only one reggae or metal track. A lofi listener gets a few real genre matches near the top, but a metal listener gets one real match and then filler. The filler happens because the energy score gives points to almost every song, so once a user runs out of songs in their own genre, the list just fills with whatever sits closest to their target energy. Basically it works best for common tastes and worst for niche ones.  
+The model works best for users whose favorite genre has a few songs in the catalog, like a lofi or pop fan. For those users the top picks feel right, they get songs that match on genre, mood, and energy all at once. It is also good at giving a clear reason for every pick, which makes the results easy to understand. When I tested a chill lofi profile, the top songs were exactly the calm, quiet tracks I expected.
 
 ---
 
-## 7. Evaluation  
+## 6. Limitations and Bias
 
-How you checked whether the recommender behaved as expected. 
+One weakness I found is that the recommender treats genre as an exact match, so it ends up favoring the genres that have the most songs in my catalog. My dataset has three lofi tracks but only one reggae or metal track, so a lofi listener gets a few real genre matches near the top, but a metal listener gets one real match and then filler. The filler happens because the energy score gives points to almost every song, so once a user runs out of songs in their own genre, the list just fills with whatever sits closest to their target energy. Basically it works best for common tastes and worst for niche ones.
 
-Prompts:  
+---
 
-- Which user profiles you tested  
-- What you looked for in the recommendations  
-- What surprised you  
-- Any simple tests or comparisons you ran  
+## 7. Evaluation
 
-No need for numeric metrics unless you created some.
+I tested five listener profiles: High-Energy Pop, Chill Lofi, Deep Intense Rock, a conflicting one that wants high energy of 0.9 but a sad, melancholic mood, and an unknown genre one that likes k-pop, which is not in my catalog. For each one I looked at the top five songs and asked myself if that is what the listener would actually want.
 
-Stress test output from running the five profiles in src/main.py:
+The biggest surprise was the conflicting profile. It asks for high energy but a melancholic mood, and the song that came out on top was Winter Nocturne, a slow classical piece with very low energy. My first thought was that something was broken. But it actually makes sense once you look at the points: the genre and mood match are worth 3 together, and the energy part can only ever add up to 1, so a strong genre and mood match beats the energy even when the energy is completely wrong.
+
+The other thing I noticed is how often Gym Hero shows up. Gym Hero is a pop song with really high energy, so any time someone asks for happy or high energy pop, it grabs 2 points just for being pop and picks up a good chunk of the energy points on top of that. Even though it is not actually tagged as happy, it still ends up near the top. It is not a bug, it is just that a loud pop song is a decent partial match for a lot of upbeat tastes.
+
+Comparing the profiles side by side helped me see what each preference is really doing. The most interesting case is that three of my profiles all ask for the same 0.9 energy, High-Energy Pop, Deep Intense Rock, and the conflicting one, but they end up with completely different top songs. Pop gets Sunrise City, rock gets Storm Runner, and the conflicting one gets a slow classical track. That told me energy is not really the thing steering the results, the genre and mood are. Chill Lofi sits at the opposite end from those three. It wants calm acoustic music, so its list is full of quiet lofi and ambient songs that never show up for the high energy profiles, and it had the cleanest list because lofi is the one genre I have several songs for. The unknown genre profile was the weakest of all. Since k-pop is not in my catalog it never gets the genre bonus, so its scores stay low and the list is just whatever happens to be happy and around medium energy. Lofi and the k-pop profile are a good contrast for that reason, one has real matches to work with and the other has none.
+
+Overall the outputs look valid to me. When a profile has a real genre match in my catalog the top pick makes sense, and the only strange results come from profiles that contradict themselves or ask for a genre I do not have.
+
+The raw terminal output for all five profiles is below:
 
 ```
 === High-Energy Pop ===
@@ -164,37 +125,22 @@ Profile: {'genre': 'kpop', 'mood': 'happy', 'energy': 0.5}
    because: energy close (+0.95)
 ```
 
-I tested five listener profiles: High-Energy Pop, Chill Lofi, Deep Intense Rock, a conflicting one that wants high energy of 0.9 but a sad, melancholic mood, and an unknown genre one that likes k-pop, which is not in my catalog. For each one I looked at the top five songs and asked myself if that is what the listener would actually want.
+---
 
-The biggest surprise was the conflicting profile. It asks for high energy but a melancholic mood, and the song that came out on top was Winter Nocturne, a slow classical piece with very low energy. My first thought was that something was broken. But it actually makes sense once you look at the points: the genre and mood match are worth 3 together, and the energy part can only ever add up to 1, so a strong genre and mood match beats the energy even when the energy is completely wrong.
+## 8. Future Work
 
-The other thing I noticed is how often Gym Hero shows up. Gym Hero is a pop song with really high energy, so any time someone asks for happy or high energy pop, it grabs 2 points just for being pop and picks up a good chunk of the energy points on top of that. Even though it is not actually tagged as happy, it still ends up near the top. It is not a bug, it is just that a loud pop song is a decent partial match for a lot of upbeat tastes.
-
-Comparing the profiles side by side helped me see what each preference is really doing. The most interesting case is that three of my profiles all ask for the same 0.9 energy, High-Energy Pop, Deep Intense Rock, and the conflicting one, but they end up with completely different top songs. Pop gets Sunrise City, rock gets Storm Runner, and the conflicting one gets a slow classical track. That told me energy is not really the thing steering the results, the genre and mood are. Chill Lofi sits at the opposite end from those three. It wants calm acoustic music, so its list is full of quiet lofi and ambient songs that never show up for the high energy profiles, and it had the cleanest list because lofi is the one genre I have several songs for. The unknown genre profile was the weakest of all. Since k-pop is not in my catalog it never gets the genre bonus, so its scores stay low and the list is just whatever happens to be happy and around medium energy. Lofi and the k-pop profile are a good contrast for that reason, one has real matches to work with and the other has none.
-
-Overall the outputs look valid to me. When a profile has a real genre match in my catalog the top pick makes sense, and the only strange results come from profiles that contradict themselves or ask for a genre I do not have.
+- Add partial credit for related genres, so a lofi fan can also get ambient or jazz songs that fit the same mood.
+- Grow the catalog and balance it, so every genre has a fair number of songs instead of just one.
+- Use more of the features I already have, like valence and danceability, instead of leaning so much on genre and energy.
 
 ---
 
-## 8. Future Work  
+## 9. Personal Reflection
 
-Ideas for how you would improve the model next.  
+The biggest thing I learned is that a recommender is really just a scoring rule plus a sort. Once I saw that every song gets a number and the list is just sorted by that number, the whole idea stopped feeling like magic. My biggest learning moment was watching the conflicting profile pick a slow classical song even though it asked for high energy. That is when the point weights actually clicked for me, because I could see genre and mood outweighing the energy.
 
-Prompts:  
+AI tools helped me a lot with the boring parts, like writing the CSV loader and remembering Python syntax. They were also good for talking through the scoring math and for ideas on edge case profiles to test. I did have to double-check them though. A few times the AI wanted to over explain simple functions or claimed a result that was not quite right, so I ran the code myself and checked the actual output before trusting it.
 
-- Additional features or preferences  
-- Better ways to explain recommendations  
-- Improving diversity among the top results  
-- Handling more complex user tastes  
+What surprised me most is how much a simple set of if statements can feel like a real recommendation. There is no machine learning here, just adding points, but the top picks still felt right for most profiles. It made me realize the big apps probably start from simple rules like this before they get fancy.
 
----
-
-## 9. Personal Reflection  
-
-A few sentences about your experience.  
-
-Prompts:  
-
-- What you learned about recommender systems  
-- Something unexpected or interesting you discovered  
-- How this changed the way you think about music recommendation apps  
+If I kept working on this I would add partial credit for similar genres, grow the dataset so it is more balanced, and use more of the features I already collect. I would also like to let a user pick more than one favorite genre, since real taste is never just one thing.
