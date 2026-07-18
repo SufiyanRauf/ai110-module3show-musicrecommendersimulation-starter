@@ -166,6 +166,8 @@ Use this section to document the experiments you ran. For example:
 - What happened when you added tempo or valence to the score
 - How did your system behave for different types of users
 
+I tried the weight shift experiment. I doubled how much energy counts and cut the genre points in half, from 2.0 down to 1.0. When I ran it, the number one pick for every profile stayed the same, but the middle of the list shuffled around. Songs that were not the right genre but had a really close energy moved up. For example a chill ambient song jumped ahead of a real lofi song in the Chill Lofi list, just because its energy was almost perfect. So the change made the results different but not really more accurate. It told me that genre plus mood together still control the top pick, and energy mostly matters for breaking ties lower down. That is why I kept the original weights.
+
 ---
 
 ## Limitations and Risks
@@ -180,6 +182,12 @@ Examples:
 
 You will go deeper on this in your model card.
 
+- It only works on a tiny catalog of 17 songs, so there is not much variety.
+- It does not understand lyrics, language, or what a song is actually about.
+- The catalog is uneven, so lofi and pop users get better results than niche genres with only one song.
+- It treats genre as an exact match, which can trap a user in one genre and miss songs they would like.
+- It has no idea about a real person's history, their mood that day, or what is popular, so it is only a rough guess.
+
 ---
 
 ## Reflection
@@ -192,6 +200,10 @@ Write 1 to 2 paragraphs here about what you learned:
 
 - about how recommenders turn data into predictions
 - about where bias or unfairness could show up in systems like this
+
+The main thing this project taught me about recommenders is that a prediction is just a comparison. My code lines up what a user says they want against the features of each song, gives out points for the parts that match, and the songs with the most points become the guesses. There is no real understanding of the music happening, it is just measuring overlap between two lists of features.
+
+The part that stuck with me is how unfair that can get without anyone meaning it to. Because my catalog has way more lofi songs than anything else, lofi fans get a full, accurate list and someone into metal gets one real match and a bunch of filler. That imbalance came straight from the data and from choosing to reward exact genre matches so heavily. It made me see that in a real recommender the choices about what data to include and what to score highest can decide who the system works well for and who gets left out.
 
 
 
