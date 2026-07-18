@@ -10,6 +10,7 @@ You will implement the functions in recommender.py:
 """
 
 from src.recommender import load_songs, recommend_songs
+from tabulate import tabulate
 
 
 # A few different listeners to stress test the scoring, including some
@@ -25,11 +26,12 @@ PROFILES = {
 
 def show_recommendations(name, user_prefs, songs, k=5):
     recommendations = recommend_songs(user_prefs, songs, k=k)
+    rows = []
+    for i, (song, score, explanation) in enumerate(recommendations, start=1):
+        rows.append([i, song["title"], song["artist"], f"{score:.2f}", explanation])
     print(f"=== {name} ===")
     print(f"Profile: {user_prefs}")
-    for i, (song, score, explanation) in enumerate(recommendations, start=1):
-        print(f"{i}. {song['title']} by {song['artist']} - score {score:.2f}")
-        print(f"   because: {explanation}")
+    print(tabulate(rows, headers=["#", "Song", "Artist", "Score", "Why"], tablefmt="grid", disable_numparse=True))
     print()
 
 
