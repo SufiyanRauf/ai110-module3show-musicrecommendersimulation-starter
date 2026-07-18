@@ -1,5 +1,6 @@
+import csv
 from typing import List, Dict, Tuple, Optional
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 
 @dataclass
 class Song:
@@ -30,44 +31,79 @@ class UserProfile:
     likes_acoustic: bool
 
 class Recommender:
-    """
-    OOP implementation of the recommendation logic.
-    Required by tests/test_recommender.py
-    """
+    """Object-oriented version of the recommender used by the tests."""
     def __init__(self, songs: List[Song]):
         self.songs = songs
 
     def recommend(self, user: UserProfile, k: int = 5) -> List[Song]:
-        # TODO: Implement recommendation logic
-        return self.songs[:k]
+        """Return the top k songs for a user, highest score first."""
+        prefs = self._user_prefs(user)
+        ranked = sorted(self.songs, key=lambda s: score_song(prefs, asdict(s))[0], reverse=True)
+        return ranked[:k]
 
     def explain_recommendation(self, user: UserProfile, song: Song) -> str:
-        # TODO: Implement explanation logic
-        return "Explanation placeholder"
+        """Return a short reason string for why a song was picked."""
+        prefs = self._user_prefs(user)
+        score, reasons = score_song(prefs, asdict(song))
+        if not reasons:
+            return f"{song.title} scored {score} with no strong matches"
+        return f"{song.title} scored {score}: " + ", ".join(reasons)
+
+    @staticmethod
+    def _user_prefs(user: UserProfile) -> Dict:
+        return {
+            "genre": user.favorite_genre,
+            "mood": user.favorite_mood,
+            "energy": user.target_energy,
+            "likes_acoustic": user.likes_acoustic,
+        }
 
 def load_songs(csv_path: str) -> List[Dict]:
-    """
-    Loads songs from a CSV file.
-    Required by src/main.py
-    """
-    # TODO: Implement CSV loading logic
-    print(f"Loading songs from {csv_path}...")
-    return []
+    """Read the songs CSV and return them as a list of dicts."""
+    songs = []
+    with open(csv_path, newline="") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            row["id"] = int(row["id"])
+            row["energy"] = float(row["energy"])
+            row["tempo_bpm"] = int(row["tempo_bpm"])
+            row["valence"] = float(row["valence"])
+            row["danceability"] = float(row["danceability"])
+            row["acousticness"] = float(row["acousticness"])
+            songs.append(row)
+    return songs
 
 def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
-    """
-    Scores a single song against user preferences.
-    Required by recommend_songs() and src/main.py
-    """
-    # TODO: Implement scoring logic using your Algorithm Recipe from Phase 2.
-    # Expected return format: (score, reasons)
-    return []
+    """Score one song against the user's prefs and list the reasons why."""
+    score = 0.0
+    reasons = []
+
+    if song["genre"] == user_prefs.get("genre"):
+        score += 2.0
+        reasons.append("genre match (+2.0)")
+
+    if song["mood"] == user_prefs.get("mood"):
+        score += 1.0
+        reasons.append("mood match (+1.0)")
+
+    if "energy" in user_prefs:
+        closeness = round(1.0 - abs(song["energy"] - user_prefs["energy"]), 2)
+        score += closeness
+        reasons.append(f"energy close (+{closeness})")
+
+    if user_prefs.get("likes_acoustic") and song["acousticness"] > 0.6:
+        score += 1.0
+        reasons.append("acoustic bonus (+1.0)")
+
+    return round(score, 2), reasons
 
 def recommend_songs(user_prefs: Dict, songs: List[Dict], k: int = 5) -> List[Tuple[Dict, float, str]]:
-    """
-    Functional implementation of the recommendation logic.
-    Required by src/main.py
-    """
-    # TODO: Implement scoring and ranking logic
-    # Expected return format: (song_dict, score, explanation)
-    return []
+    """Score every song, then return the top k as (song, score, reasons)."""
+    scored = []
+    for song in songs:
+        score, reasons = score_song(user_prefs, song)
+        explanation = ", ".join(reasons) if reasons else "no strong matches"
+        scored.append((song, score, explanation))
+
+    scored.sort(key=lambda item: item[1], reverse=True)
+    return scored[:k]
